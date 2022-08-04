@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{%block links%}
+<script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.js"></script>
+<style>
+    body{
+        overflow: scroll;
+    }
+</style>
+
+{%endblock%}
+{%block content%}
+<p class="h1 text-info m-3 p-0">My HighScore: {{user['highScores']['cardGame']}}</p>
+<div id="canvasContainer" class="m-3 p-0" style="min-width:300px;">
+    <!-- <canvas id="cardGame" style="width:100%;"></canvas> -->
+</div>
+<p class="text-muted m-3 p-0">*Find the A of hearts to proceed to the next level</p>
+<script src="/static/canvas.js"></script>
+{%endblock%}

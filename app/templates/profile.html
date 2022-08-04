@@ -1,0 +1,351 @@
+{% extends "base.html" %}
+    {%block links%}
+    <!-- <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script> -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <style>
+            .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 48
+            }
+            #_profile{
+                transform:translate(0, -50%);
+                width:20%;
+                height:auto;
+                background-color:white;
+                border-radius:50%;
+                overflow:hidden;
+            }
+            .hover:hover{
+                cursor:pointer;
+                background-color:rgb(207, 201, 201);
+            }
+            .activePage{
+                display:block !important;
+            }
+            .pages{
+                display:none;
+            }
+            #friendProfile{
+                position:absolute;
+                top:50%;
+                left:50%;
+                transform: translate(-50%, -50%);
+                width:50%;
+            }
+            @media screen and (max-width: 800px){
+                #friendProfile{
+                    width:90%;
+                }
+
+            }
+            #main{
+                padding:0;
+            }
+
+        </style>
+    {%endblock%}
+	{% block content %}
+    <div id="friendWindow" style="display:none;position:absolute; width:100%; height:100%;z-index:2; background-color: rgba(0,0,0,0.7);">
+        <a href="javascript:void(0)" class="closebtn text-decoration-none" onclick="closeFriendProfile();">&times;</a>
+        <div id="friendProfile" class="container bg-dark rounded p-0 pb-3">
+            <img style="max-height:300px; width:100%"class="rounded" src="./static/storage/default/banner.jpg"/>
+            <div id="_profile" class="mx-4">
+                <img style="width:100%;" src="./static/storage/default/mario.png"/>
+            </div>
+            <p id="friendUsername" style="margin-top:-5%; color:var(--primary-highlight);"class="text-start ps-3 h1"></p>
+            <p id="friendId" class="text-start ps-3"></p>
+            <div class="mx-2">
+                <textarea id="friendBio" name="bio" style="min-height:120px;"  class="form-control text-start disabled" placeholder="Enter some info..."disabled></textarea>
+                <div id="friendBioButtons" class="d-flex justify-content-end  btn-group my-2"></div>
+                <p  class="h2 text-info">My HighScores:</p>
+                <p id="friendHighscores"></p>
+
+            </div>
+        </div>
+    </div>
+<div class="m-3 p-0">
+
+        <div class="container rounded p-0">
+            <div class="btn-group ">
+                <button type="button" class="btn btn-primary" onclick="getContent('profilePage');">Profile</button>
+                <button type="button" class="btn btn-primary" onclick="getContent('friendsPage');">Friends</button>
+                <button type="button" class="btn btn-primary" onclick="getContent('requestsPage');">Requests <span class="badge bg-danger">{%if user['requests']|length > 0%}{{user['requests']|length}}{%endif%}</span></button>
+            </div>
+        </div>
+
+
+            <!--profile component-->
+            <div id="profilePage" class="pages activePage container bg-dark rounded p-0 pb-3">
+                <img style="max-height:300px; width:100%"class="rounded" src="./static/storage/default/banner.jpg"/>
+                <div id="_profile" class="mx-4">
+                    <img style="width:100%;" src="./static/storage/default/mario.png"/>
+                </div>
+                <p style="margin-top:-5%; color:var(--primary-highlight);"class="text-start ps-3 h1">{{user['username']}}</p>
+                <p class="text-start ps-3">id: {{user['_id']}}</p>
+                <div class="mx-2">
+                    <textarea id="bio" onkeydown="ChangeBio();" name="bio" style="min-height:120px;"  class="form-control text-start" placeholder="Enter some info...">{%if user['bio'].strip() != ""%}{{user['bio']}}{%endif%}</textarea>
+                    <div id="bioButtons" class="d-flex justify-content-end  btn-group my-2"></div>
+                    <p class="h2 text-info">My HighScores:</p>
+                    {%for key in user['highScores'].keys()%}
+                        <p>{{key}}: {{user['highScores'][key]}}</p>
+                    {%endfor%}
+                </div>
+            </div>
+            <!--profile component end-->
+            <!--friends component-->
+
+            <div id="friendsPage" class="pages container bg-dark rounded p-2">
+                <label class="h2 text-info">Search for friends:</label>
+                <div class="row">
+                    <div class="col-10" ><input id="friendSearch" type="search" class="form-control" style="height:100%;" autocomplete="off" oninput="getSuggestions()"/></div>
+                    <div class="col-2 ps-0" ><button style="width:100%; height:100%;"class=" btn btn-primary " type="button"  onclick="sendFriendRequest()"><i class="material-symbols-outlined">search</i></button></div>
+                    <!-- <i class="fas fa-search"></i> -->
+                </div>
+                <ul id="suggestionContainer" style="position:absolute; width:50%; z-index:1;"class="list-group">
+                </ul>
+                <div>
+                    <p class=" h2 text-info" >My Friends:</p>
+                    <ul class="list-group">
+                        {%for user in user["friendsList"]%}
+                            <!-- add id to list -->
+
+                            <li id="{{user}}" class="list-group-item hover">
+                                <div class="row">
+                                    <div class="col-11 text-dark" onclick="viewProfile('{{user}}')">{{user}}</div>
+                                    <div class="col-1 d-flex justify-content-center"><i  class="material-symbols-outlined text-danger" onclick="deleteFriend('{{user}}', 'api/profile/deleteFriend')">delete</i></div>
+                                </div>
+                            </li>
+                        {%endfor%}
+                    </ul>
+                </div>
+
+
+            </div>
+
+            <div id="requestsPage" class="pages container bg-dark rounded p-2">
+                <p class="h2 text-info">Friend Requests: </p>
+                {%if user['requests']|length == 0%}
+                    <p><i>no friend requests available</i></p>
+                {%else%}
+
+                    <ul id="friendRequests" class="list-group">
+                        {%for user in user['requests']%}
+                            <li  id="{{user}}" class="list-group-item">
+                                <div class="row" >
+                                    <div class="col-10 text-dark">{{user}}</div>
+                                    <div class="col-1 d-flex justify-content-center" ><span onclick="confirmRequest('{{user}}')" class="material-symbols-outlined text-primary hover">done</span></div>
+                                    <div class="col-1 d-flex justify-content-center" ><span onclick="rejectReqeust('{{user}}')" class="material-symbols-outlined text-danger hover">delete</span></div>
+                                </div>
+                                <!-- <div ><i class="fa-solid fa-check"></i></div>
+                                <div ><i class="fa-solid fa-xmark-large"></i></div> -->
+                            </li>
+
+                        {%endfor%}
+                    </ul>
+                {%endif%}
+                <p class="h2 text-info">Pending Requests: </p>
+                {%if user['pendingRequests']|length == 0%}
+                    <p><i>no pending requests</i></p>
+                {%else%}
+                    <ul id="pendingRequests" class="list-group">
+                        {%for user in user['pendingRequests']%}
+                            <li id="{{user}}" class="list-group-item hover">
+                                <div class="row">
+                                    <div class=" col-11 text-dark">{{user}}</div>
+                                    <div class="col-1 d-flex justify-content-center"><i  onclick="deleteFriend('{{user}}', '/api/profile/deletePendingRequest')" class="material-symbols-outlined text-danger">delete</i></div>
+                                </div>
+                            </li>
+                        {%endfor%}
+                    </ul>
+                {%endif%}
+
+            </div>
+            <!--friends component end-->
+        </div>
+    </div>
+
+
+        <script>
+            bio        = document.getElementById("bio");
+            bioButtons = document.getElementById("bioButtons");
+            previousBio = '';
+            cancelID = "cancel"
+            changeID = "change"
+            submitID = "submit"
+            var submitButton = submitBtn();
+            function getContent(id){
+                var classList = document.getElementsByClassName('pages')
+                for(var i = 0; i < classList.length; ++i){
+                    classList[i].classList.remove('activePage');
+                    if(classList[i].id == id){
+                        classList[i].classList.add('activePage');
+                    }
+                }
+            }
+            ///////Icon buttons///////////////////
+            function confirmRequest(request){
+                $.ajax({
+                    url:"api/profile/confirmRequest",
+                    type: "POST",
+                    data:JSON.stringify(request),
+                    contentType:"application/json; charset=utf-8",
+                    success: function(response ){
+
+                            $('#'+request).remove()
+
+                    }
+                })
+            }
+            function rejectReqeust(request){
+                $.ajax({
+                    url:"api/profile/rejectRequest",
+                    type: "POST",
+                    data:JSON.stringify(request),
+                    contentType:"application/json; charset=utf-8",
+                    success: function(response){
+                        $('#'+request).remove()
+                    }
+
+                })
+            }
+            function deleteFriend(friend, url){
+                if(url =="api/profile/deleteFriend"){
+
+                    $.ajax({
+                        url:url,
+                        type:"POST",
+                        data:JSON.stringify(friend),
+                        contentType:"application/json; charset=utf-8",
+                        success: function(){
+                            $("#"+friend).remove()
+                        }
+
+                    })
+                }else if(url="api/profile/deletePendingRequest"){
+
+                    $.ajax({
+                        url:url,
+                        type:"POST",
+                        data:JSON.stringify(friend),
+                        contentType:"application/json; charset=utf-8",
+                        success: function(response){
+                            $("#"+friend).remove()
+
+                        }
+                    })
+                }
+
+
+            }
+            //////////////////////////////
+            function sendFriendRequest(){
+                friend= $('#friendSearch').val()
+                console.log(friend);
+                $.ajax({url:"api/profile/sendFriendRequest",
+                    type:"POST",
+                    data:  JSON.stringify(friend),
+                    contentType:"application/json; charset=utf-8",
+                    success:function(){
+                        $('#friendSearch').val('')
+                        $('#suggestionContainer').html('')
+
+                    }
+                })
+            }
+            /////////////////////////////////////
+            function ChangeBio(){
+                previousBio = bio.value;
+                bioButtons.appendChild(submitButton);
+                bio.removeAttribute("disabled");
+            }
+            function cancelChange(){
+                var temp = document.getElementById(submitID);
+                if(temp != null){
+                    bioButtons.removeChild(temp);
+                }
+                bio.addAttribute("disabled", "");
+                bio.value = previousBio;
+                bio.classList.add("disabled");
+            }
+            function saveBio(){
+                $.ajax({url:"api/profile/bio",
+                     type:"POST",
+                       data:  JSON.stringify(bio.value),
+                       contentType:"application/json; charset=utf-8",
+                       success:function(){
+                            $('#bioButtons #submit').remove()
+                            $('#bio').attr('disabled', '')
+                       }
+                    })
+
+            }
+            //will need updates to support multiple game highscores
+            function viewProfile(id){
+                $.ajax({
+                    url:"api/profile/friendProfile",
+                    contentType:"application/json; charset=utf-8",
+                    type:"POST",
+                    data:JSON.stringify(id),
+                    success: function(friendInfo){
+                        friendInfo = JSON.parse(friendInfo)
+                        console.log(friendInfo)
+                        $('#friendHighscores').html('<p>CardGame: '+ friendInfo.friendProfile.highScores['cardGame'])
+                            friendId
+                        $('#friendId').html( 'id: '+friendInfo.friendProfile._id)
+                        $('#friendUsername').html( friendInfo.friendProfile.username)
+                        $('#friendWindow').css('display', 'block');
+                        $('#friendBio').html(friendInfo.friendProfile.bio);
+
+                    }
+
+                })
+            }
+            function getSuggestions(){
+                $.ajax({
+                    url:"api/profile/suggestions",
+                    data:JSON.stringify(($('#friendSearch').val())),
+                    type:"POST",
+                    contentType:"application/json; charset=utf-8",
+                    success:function(response){
+
+                        response = JSON.parse(response);
+                        console.log(response.suggestions.length);
+                        $('#suggestionContainer').html('')
+                        if(response.suggestions.length != 0){
+                            for(let i = 0; i < response.suggestions.length; ++i){
+                                $('#suggestionContainer').append('<li style="background-color:grey" class="list-group-item text-white hover" onclick="addSuggestionToSearch(this.id)" id='+'"list-item-'+i+'">'+ response.suggestions[i]+'</li>');
+                            }
+                        }
+                    }
+                })
+            }
+            function addSuggestionToSearch(id){
+                $('#friendSearch').val($('#'+id).html())
+                $('#suggestionContainer').html('')
+            }
+            function closeFriendProfile(){
+                $('#friendWindow').css('display', 'none');
+
+
+            }
+
+            function submitBtn(){
+                //btn = $(<<button></button>).text()
+                var btn = document.createElement("button");
+                btn.innerHTML = "Save";
+                btn.setAttribute("id", submitID);
+                btn.setAttribute("type", "submit");
+                btn.addEventListener("click", saveBio);
+                btn.classList.add("btn");
+                btn.classList.add("btn-primary");
+                return btn;
+            }
+
+
+        </script>
+
+
+	{% endblock %}

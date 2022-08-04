@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+</html>
+<head>
+<title>Sign-up</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+
+
+h1{
+	color:#12c22d;
+	font-size:30px;
+}
+p{
+	font-size:15px;
+}
+
+#Login_Background{
+    position:absolute;
+    display:flex;
+    justify-content:space-evenly;
+
+    align-items: center;
+    margin:0;
+    padding:0;
+    top:0;
+    left:0;
+    background-image: url('{{url_for("static", filename="login.jpg")}}');
+    background-repeat:no-repeat;
+    background-size:cover;
+    width:100%;
+    height:100%;
+
+
+}
+#Login_Window{
+
+	width:400px;;
+	height: auto;
+	margin:0;
+	padding: 0 20px;
+	padding-bottom: 40px;
+	background-color:#fff;
+	border-radius: 15px 50px;
+	outline: 3px solid rgba(0,0,0, 0.3);
+
+}
+#Login{
+	padding:20px;
+}
+#Login div{
+	display:flex;
+	justify-content: center;
+
+}
+#Login  table{
+	border-spacing: 0;
+	padding:0;
+	width:100%;
+	align-items: baseline;
+
+}
+
+td{
+	padding:20px 0;
+}
+label{
+	font-size:20px;
+	padding-right:30px;
+
+}
+input[type="text"], input[type="password"]{
+	width:95%;
+	border-radius:5px;
+	padding:10px 5px;
+}
+input::placeholder{
+	font-size:15px;
+}
+input:focus, input:hover{
+	outline: 3px solid skyblue;
+	border-radius: 5px;
+}
+input[type="submit"]{
+
+	width:70%;
+	margin-top:15px;
+	margin-bottom: 10px;
+	font-size:20px;
+	letter-spacing: 2px;
+	padding:5px 10px;
+	border-radius:5px;
+	border-color:transparent;
+	background-color: #12c22d;
+	color:white;
+}
+</style>
+</head>
+<body>
+	<div id="Login_Background">
+		<div id="Login_Window">
+ 			<form id="Login" method="POST">
+					<h1>Sign-up</h1>
+					{{form.hidden_tag()}}
+    				<table>
+						<tr>
+							<td><label>{{form.username.label}}</label></td>
+							<td>{{form.username()}}</td>
+						</tr>
+						<tr>
+							<td>{{form.password.label}}</td>
+							<td>{{form.password()}}</td>
+						</tr>
+						<tr>
+							<td>{{form.repeated.label}}</td>
+							<td>{{form.repeated()}}</td>
+						</tr>
+					</table>
+
+
+
+
+    				<div>
+        				{{form.submit()}}
+    				</div>
+					<p>already have an account? <a href="./login">Sign-in here</a></p>
+  			</form>
+    		</div>
+	</div>
+
+</body>
+</html>

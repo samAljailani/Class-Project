@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+    
+    {%block links%}
+        <link rel="stylesheet" href="{{url_for('static', filename='home.css')}}" />
+    {%endblock%}
+	{% block content %}
+		<div id="slideShow" class="carousel slide mx-1" data-bs-ride="carousel">
+			<div class="carousel-indicators">
+				<button type="button" data-bs-target="#demo" data-bs-slide-to="0" class="active"></button>
+				<button type="button" data-bs-target="#demo" data-bs-slide-to="1"></button>
+				<button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
+			</div>
+			<div class="carousel-inner" >
+				<div class="carousel-item active" onclick="document.location='/games';">
+					<img src="/static/cardGameSlide.jpg" class="d-block w-100">
+					<div style="color:var(--primary-font);"class="carousel-caption h1">Card Finder</div>
+
+				</div>
+				<div class="carousel-item disabled" style="overflow:hidden;">
+					<img src="/static/comingSoon.jpg" class="d-block w-100">
+					<div style="color:var(--primary-font);" class="carousel-caption h1 ">Game2</div>
+				</div>
+				
+			</div>
+			<button class="carousel-control-prev" type="button" data-bs-target="#slideShow" data-bs-slide="prev">
+				<span class="carousel-control-prev-icon"></span>
+			</button>
+			<button class="carousel-control-next" type="button" data-bs-target="#slideShow" data-bs-slide="next">
+				<span class="carousel-control-next-icon"></span>
+			</button>
+
+
+		</div>
+		
+
+		<!--slideshow html end-->
+
+			<!--<div style="display:flex;">
+				<div class="animation1"></div>
+				<div class="animation1"></div>
+				<div class="animation1"></div>
+				<div class="animation1"></div>
+				<div class="animation1"></div>
+			</div>-->
+		<script src="{{url_for('static', filename='home.js')}}"></script>
+
+	{% endblock %}
