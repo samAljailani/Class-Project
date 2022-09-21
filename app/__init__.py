@@ -9,7 +9,6 @@ db = dbclient["flaskDatabase"]
 userCollection = db["users"]
 friendsCollection = db["userFriends"]
 from app import routes
-
 'db design for messages'
 '''
 class User():

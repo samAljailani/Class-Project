@@ -12,8 +12,8 @@
     <body>
 	<div id="menu">
 	    <a href="javascript:void(0)" class="closebtn text-decoration-none" onclick="closeMenu();">&times;</a>
-		<div style="height:125px; width:100%;"><img style="height:125px;width:100%;" src="./static/storage/{{user['bannerLink']}}"></div>
-		<div id="profile" class="mx-auto"><img style="height:100%; width:100%;"src="./static/storage/{{user['imageLink']}}"/></div>
+		<div style="height:125px; width:100%;"><img style="height:125px;width:100%;" src="./static/banner.jpg"></div>
+		<div id="profile" style="overflow:hidden"class="mx-auto"><img style="height:100%; width:100%;"src="./static/mario.png"/></div>
 		<div class="text-center h4 text-nowrap"style="margin-top:-40px">{{username}}</div>
 
 		<div id="menuLinks">
@@ -25,28 +25,25 @@
 				{%endif%}
 					<hr class="mx-auto w-75"/>
 			{%endfor%}
-				
+
 
 		</div>
 	</div>
-		<div id="header" >
 
-			<div id="menuIcon" onclick="displayMenu();">
-					<div class="bar"></div>
-					<div class="bar"></div>
-					<div class="bar"></div>
-			</div>
-			<h1 class="text-info" style="margin:auto;">{{title}}</h1>
-			<input type="search"/>
-		</div>
-		<div id="main">
-			{%block content %}{%endblock%}
-		
-		</div>
-		<!-- <hr class="mx-auto w-75">
-		<div id="footer" class="p-0">
-		</div> -->
+	<div id="header" >
 
+		<div id="menuIcon" onclick="displayMenu();">
+				<div class="bar"></div>
+				<div class="bar"></div>
+				<div class="bar"></div>
+		</div>
+		<h1 style="color:var(--primary-font); margin:auto;">{{title}}</h1>
+		<input type="search"/>
+	</div>
+	<div id="main">
+		{%block content %}{%endblock%}
+
+	</div>
 
 	<script src="{{url_for('static',filename='base.js')}}"></script>
 	</body>

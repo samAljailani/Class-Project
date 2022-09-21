@@ -38,7 +38,7 @@ const s = (p) =>{
         bg.resize(p.width, p.height);
         p.noStroke();
         p.imageMode(p.CENTER);
-        speed = 3;
+        speed = 5;
         offset = 0.2;// percentage of width
         numOfCards = 4;
         distanceBetweenCards = 0.2;//percentage of width
@@ -53,7 +53,7 @@ const s = (p) =>{
         cardGame = new Game(cards);
     }
     p.draw= function() {
-        if( p.millis() > interval ){ 
+        if( p.millis() > interval ){
             p.image(bg, p.width/2, p.height/2, p.width, p.height);
             drawScore();
             for(card of cardGame.cards){
@@ -64,11 +64,11 @@ const s = (p) =>{
             interval = p.millis() + intervalDuration;
             cardGame.updateHighScore();
         }
-        
+
         cardGame.viewResults();
     }
     p.mouseClicked = function(){
-        //uses state desing pattern so if the current state is not 
+        //uses state desing pattern so if the current state is not
         //GetUserSelection nothing will happen
         cardGame.getUserSelection();
         cardGame.startGame();
@@ -84,12 +84,10 @@ const s = (p) =>{
             card.reposition(width, p.height);
         }
 
-        // bg.resize(p.width, p.height);
-        // p.background(bg);
       }
 
       class Card{
-        
+
         constructor(back,front,winner, x, y, windowWidth, windowHeight, xAdder=2, yAdder=2){
             this.cardback = back;
             this.cardfront = front;
@@ -107,8 +105,8 @@ const s = (p) =>{
                 this.width = 40;
             }
             this.height = this.width * 1.5;
-            
-            
+
+
         }
         winningCard(){
             return this.winner;
@@ -125,7 +123,7 @@ const s = (p) =>{
             }else{
                 this.xAdder += 1;
             }
-            
+
         }
         incrementYAdder(i = undefined){
             if(i != undefined){
@@ -156,7 +154,7 @@ const s = (p) =>{
         increment(i = undefined){
             this.incrementY(i);
             this.incrementX(i);
-            
+
         }
         decrementX(i = undefined){
             if( i !== undefined){
@@ -194,7 +192,7 @@ const s = (p) =>{
         flipToFront(){
             this.currentImage = this.cardfront;
         }
-        
+
         reposition(newWidth, newHeight){
             //repsoitioning x
             var temp = 0;
@@ -217,7 +215,7 @@ const s = (p) =>{
             this.height = this.width * 1.5;
             p.image(this.cardback, this.x, this.y, this.width, this.height);
         }
-        
+
     }
 
 class Game{
@@ -236,13 +234,13 @@ class Game{
         for(card of cards){
             card.incrementXAdder(2);
         }
-        
+
 
     }
     resetGame(){
         for(card of this.cards){
             card.flipToBack();
-            card.setAdders(2);
+            card.setAdders(speed);
         }
         this.currentLevel = 1;
         this.resetScore();
@@ -278,7 +276,7 @@ class Game{
     preGame(){
         this.state.preGame(this);
     }
-    
+
     changeState(state){
         this.state = state;
     }
@@ -289,7 +287,7 @@ class Game{
 // |               |         |                  |         |              |         |              |
 // |    Shuffle    | ------> | GetUserSelection | ------> |  ViewResults | ------> |    Shuffle   |
 // |_______________|         |__________________|         |______________|         |______________|
-//  
+//
 class States{
     constructor(){
 
@@ -305,7 +303,7 @@ class States{
     changeState(gameInstance, state){
         gameInstance.changeState(state);
     }
-    
+
 }
 class Start extends States{
     constructor(){
@@ -355,7 +353,7 @@ class Shuffle extends States{
             while (this.index1 == this.index2){
                 this.index2 = Math.floor(Math.random()*numOfCards);
             }
-            ++this.shuffleCount; 
+            ++this.shuffleCount;
         }
         this.swap(this.index1, this.index2, gameInstance);
         if(this.shuffleCount == this.numOfSwaps && !this.lockSwap){
@@ -367,7 +365,7 @@ class Shuffle extends States{
     }
     swap(i, j, gameInstance){
 
-    
+
         if(!this.lockSwap){
             if(gameInstance.cards[i].x > gameInstance.cards[j].x){
                 this.index1 = j;
@@ -384,7 +382,7 @@ class Shuffle extends States{
             let deltaY = 250 - (250 + 0.4* 500);
             let deltaX = gameInstance.cards[this.index2].x - gameInstance.cards[this.index1].x;
             this.yIncrememt = (deltaY / deltaX) * gameInstance.cards[this.index1].xAdder;
-            
+
         }
         let index1 = this.index1;
         let index2 = this.index2;
@@ -437,7 +435,7 @@ class GetUserSelection extends States{
                 }else{
                     gameInstance.setPlayerWonRound(false);
                 }
-                
+
                 gameInstance.changeState(ViewResults.getInstance());
                 break;
             }
@@ -492,7 +490,7 @@ class ViewResults extends States{
                 }
             }
         }
-        
+
     }
 
 }
@@ -507,9 +505,9 @@ class EndGame extends States{
     updateHighScore(gameInstance){
         $.ajax({
             url:'/api/game/highScore',
-            type:'POST', 
+            type:'POST',
             contentType:"application/json; charset=utf-8",
-            data:JSON.stringify(gameInstance.Score()), 
+            data:JSON.stringify(gameInstance.Score()),
             success:function(){
             }
         })

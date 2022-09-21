@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+    {%block links%}
+        <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.js"></script>
+        <style>
+            :root{
+                --primary-highlight: #12c22d;
+            }
+            #button-container{
+                width:100%;
+                height:fit-content;
+                display:flex;
+                justify-content:space-around;
+                transition: margin-left 0.5s;
+            }
+            input[type="button"], button{
+                background-color: var(--primary-highlight);
+                box-sizing: border-box;
+                border: 0px;
+                border-radius: 5px;
+                font-size: 16px;
+                color: white;
+                min-width: fit-content;
+            }
+
+        </style>
+    {%endblock%}
+    {%block content%}
+        <div id="tictactoe" style="min-width:300px;width:100%; height:fit-content;"></div>
+        <script type="module" src='./static/TicTacToe/tictactoe.js'></script>
+        <p class="text-muted m-3 p-0">*X is always to play first</p>
+    {%endblock%}

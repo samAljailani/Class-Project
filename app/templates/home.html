@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-    
+
     {%block links%}
         <link rel="stylesheet" href="{{url_for('static', filename='home.css')}}" />
     {%endblock%}
@@ -10,17 +10,22 @@
 				<button type="button" data-bs-target="#demo" data-bs-slide-to="1"></button>
 				<button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
 			</div>
-			<div class="carousel-inner" >
-				<div class="carousel-item active" onclick="document.location='/games';">
+			<div class="carousel-inner">
+				<div class="carousel-item active" onclick="document.location='/cards';">
 					<img src="/static/cardGameSlide.jpg" class="d-block w-100">
 					<div style="color:var(--primary-font);"class="carousel-caption h1">Card Finder</div>
 
 				</div>
+				<div class="carousel-item disabled" onclick="document.location='/tictactoe';">
+					<img src="/static/tictactoeSlide.png" class="d-block w-100">
+					<div style="color:var(--primary-font);"class="carousel-caption h1">TicTacToe</div>
+
+				</div>
 				<div class="carousel-item disabled" style="overflow:hidden;">
 					<img src="/static/comingSoon.jpg" class="d-block w-100">
-					<div style="color:var(--primary-font);" class="carousel-caption h1 ">Game2</div>
+					<div style="color:var(--primary-font);" class="carousel-caption h1 ">Game3</div>
 				</div>
-				
+
 			</div>
 			<button class="carousel-control-prev" type="button" data-bs-target="#slideShow" data-bs-slide="prev">
 				<span class="carousel-control-prev-icon"></span>
@@ -31,17 +36,6 @@
 
 
 		</div>
-		
-
-		<!--slideshow html end-->
-
-			<!--<div style="display:flex;">
-				<div class="animation1"></div>
-				<div class="animation1"></div>
-				<div class="animation1"></div>
-				<div class="animation1"></div>
-				<div class="animation1"></div>
-			</div>-->
 		<script src="{{url_for('static', filename='home.js')}}"></script>
 
 	{% endblock %}

@@ -11,7 +11,8 @@ import re
 links = [
             {'title':'Home', 'route':'./home'},
             {'title':'Profile', 'route':'./profile'},
-            {'title':'Games', 'route':'./games'},
+            {'title':'Cards', 'route':'./cards'},
+            {'title':'TicTacToe', 'route':'./tictactoe'},
             {'title':'Logout', 'route':'./logout'}
         ]
 @app.route("/")
@@ -38,14 +39,20 @@ def post_profile():
         return redirect(url_for("get_profile"))
     else:
         return redirect(url_for("get_login"))
-@app.route("/games", methods=["GET"])
-def get_games():
+@app.route("/cards", methods=["GET"])
+def get_CardGame():
     if 'username' in session:
         user = getUser(session['username'])
     else:
         return redirect(url_for('get_login'))
-    return render_template('game.html', username=session['username'], user=user, title="Games", links = links)
-
+    return render_template('cards.html', username=session['username'], user=user, title="Cards", links = links)
+@app.route("/tictactoe", methods=["GET"])
+def get_tictactoe():
+    if 'username' in session:
+        user = getUser(session['username'])
+    else:
+        return redirect(url_for('get_login'))
+    return render_template('tictactoe.html', username=session['username'], user=user, title="TicTacToe", links = links)
 @app.route("/register", methods=['GET', 'POST'])
 def get_register():
     if 'username' in session:
@@ -55,6 +62,10 @@ def get_register():
         return post_register()
     return render_template('register.html', form=form)
 
+@app.route("/Demo", methods=["GET"])
+def get_demo():
+    session['username'] = "John"
+    return redirect(url_for("get_index"))
 def post_register():
     username = request.form.get("username", None)
     if username == None:

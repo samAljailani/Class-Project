@@ -5,6 +5,10 @@ function displayMenu(){
 	document.getElementById("header").style.marginLeft="250px";
 	main.style.marginLeft="250px";
 	main.addEventListener('click', closeMenu);
+	let temp = document.getElementById("button-container");
+    if(temp !== undefined){
+        temp.style.marginLeft = "250px";
+    }
 }
 
 function closeMenu(){
@@ -12,5 +16,9 @@ function closeMenu(){
 	document.getElementById("header").style.marginLeft="0px";
 	main.style.marginLeft="0px";
 	main.removeEventListener('click', closeMenu);
-	
+	let temp = document.getElementById("button-container");
+    if(temp !== undefined){
+        temp.style.marginLeft = "0px";
+    }
+
 }
